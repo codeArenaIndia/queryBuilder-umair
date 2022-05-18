@@ -17,6 +17,18 @@ const SCHEMA_TYPES = [
   "COMPARE",
   "STRING"
 ];
+const SET_SCHEMA = {
+  type: "set",
+  sequence: 0,
+  relation: "or",
+  functionValue: ""
+};
+const GROUP_SCHEMA = {
+  relation: "",
+  sequence: 0,
+  expressionSet: []
+};
+
 const SCHEMA = {
   TIMESTAMP: {
     type: "function",
@@ -71,4 +83,4 @@ const SCHEMA = {
   }
 };
 
-export { SCHEMA, SCHEMA_TYPES };
+export { SCHEMA, SCHEMA_TYPES, SET_SCHEMA, GROUP_SCHEMA };

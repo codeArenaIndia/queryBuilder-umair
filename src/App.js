@@ -1,15 +1,8 @@
 import "./styles.css";
 import { useState } from "react";
-import { SCHEMA, SCHEMA_TYPES } from "./scheme";
-import CustomSelect from "./components/select";
+import { SCHEMA, SCHEMA_TYPES, SET_SCHEMA, GROUP_SCHEMA } from "./scheme";
+import ExpressionBox from "./components/expressionBox";
 
-let setSchema = { type: "set", sequence: 0, relation: "or", functionValue: "" };
-let groupSchema = {
-  relation: "",
-  sequence: 0,
-  expressionSet: []
-};
-let primarySet = [{ name: "set_1", type: "SCHEMA_TYPES" }];
 export default function App() {
   const [expression, setExpression] = useState([]);
   function addExpression() {
@@ -19,9 +12,9 @@ export default function App() {
       sequence,
       group: []
     };
-    obj.group[0] = { ...groupSchema };
+    obj.group[0] = { ...GROUP_SCHEMA };
     obj["group"][0]["expressionSet"] = [];
-    obj["group"][0]["expressionSet"][0] = { ...setSchema };
+    obj["group"][0]["expressionSet"][0] = { ...SET_SCHEMA };
     exp.push(obj);
     console.log(exp);
     setExpression(exp);
@@ -40,10 +33,10 @@ export default function App() {
   function handleAddGroup(seq) {
     let exp = [...expression];
     let len = exp[seq]["group"].length;
-    let newScheme = { ...groupSchema };
+    let newScheme = { ...GROUP_SCHEMA };
     newScheme.sequence = len;
     newScheme["expressionSet"] = [];
-    newScheme["expressionSet"][0] = { ...setSchema };
+    newScheme["expressionSet"][0] = { ...SET_SCHEMA };
     exp[seq]["group"].push(newScheme);
     console.log(exp[0]);
     setExpression(exp);
@@ -52,12 +45,12 @@ export default function App() {
   function handleAddSet(seq, grpSeq) {
     let exp = [...expression];
     let len = exp[seq]["group"][grpSeq]["expressionSet"].length;
-    let newScheme = { ...setSchema };
+    let newScheme = { ...SET_SCHEMA };
     newScheme.sequence = len;
     exp[seq]["group"][grpSeq]["expressionSet"].push(newScheme);
     setExpression(exp);
   }
-  console.log(expression, "Sfsfsd");
+
   return (
     <div className="App">
       <button className="addBtn" onClick={addExpression}>
@@ -66,14 +59,14 @@ export default function App() {
       {expression.length &&
         expression.map((item, index) => {
           return (
-            <div className="queryGroup" key={`expression_${index}`}>
+            <div className="groupBox" key={`expression_${index}`}>
               {item &&
                 item.group.map((grp) => {
                   return (
-                    <div key={`group_${index}`}>
+                    <div className="expressionBox" key={`group_${index}`}>
                       {grp.expressionSet.map((elem) => {
                         return (
-                          <div key={`set_${elem.sequence}`}>
+                          <div className="setBox" key={`set_${elem.sequence}`}>
                             <ExpressionBox
                               sequence={item.sequence}
                               groupSequence={grp.sequence}
@@ -95,30 +88,6 @@ export default function App() {
             </div>
           );
         })}
-    </div>
-  );
-}
-
-function ExpressionBox({
-  sequence,
-  handleSetChange,
-  functionValue,
-  data,
-  setIndex,
-  groupSequence
-}) {
-  return (
-    <div>
-      <CustomSelect
-        options={SCHEMA_TYPES}
-        handleChange={handleSetChange}
-        value={functionValue}
-        name="select_function"
-        title="Select function"
-        sequence={sequence}
-        setIndex={setIndex}
-        groupSequence={groupSequence}
-      />
     </div>
   );
 }
